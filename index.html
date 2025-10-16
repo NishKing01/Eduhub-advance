@@ -13,7 +13,7 @@
     <!-- Control panel / Sidebar (blue) -->
     <aside class="sidebar" aria-label="Control panel">
       <div class="sidebar-top">
-        <a class="brand" href="#" aria-label="EduHub home">
+        <a class="brand" href="#" aria-label="EduHub home" id="home-link">
           <span class="logo">E</span>
           <span class="brand-name">EduHub</span>
         </a>
@@ -25,23 +25,26 @@
 
       <nav class="control-nav" role="navigation" aria-label="Control navigation">
         <ul>
-          <li><a href="#dashboard" class="active"><i class="fa-solid fa-house"></i><span>Dashboard</span></a></li>
-          <li><a href="#classes"><i class="fa-solid fa-chalkboard-user"></i><span>Classes</span></a></li>
-          <li><a href="#stream"><i class="fa-solid fa-bullhorn"></i><span>Stream</span></a></li>
-          <li><a href="#classwork"><i class="fa-solid fa-folder-open"></i><span>Classwork</span></a></li>
-          <li><a href="#calendar"><i class="fa-regular fa-calendar"></i><span>Calendar</span></a></li>
-          <li><a href="#people"><i class="fa-solid fa-users"></i><span>People</span></a></li>
-          <li><a href="#settings"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
+          <li><a href="#dashboard" class="control-link active" data-target="dashboard"><i class="fa-solid fa-house"></i><span>Dashboard</span></a></li>
+          <li><a href="#classes" class="control-link" data-target="classes"><i class="fa-solid fa-chalkboard-user"></i><span>Classes</span></a></li>
+          <li><a href="#stream" class="control-link" data-target="stream"><i class="fa-solid fa-bullhorn"></i><span>Stream</span></a></li>
+          <li><a href="#classwork" class="control-link" data-target="classwork"><i class="fa-solid fa-folder-open"></i><span>Classwork</span></a></li>
+          <li><a href="#calendar" class="control-link" data-target="calendar"><i class="fa-regular fa-calendar"></i><span>Calendar</span></a></li>
+          <li><a href="#people" class="control-link" data-target="people"><i class="fa-solid fa-users"></i><span>People</span></a></li>
+          <li><a href="#settings" class="control-link" data-target="settings"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
         </ul>
       </nav>
 
       <div class="sidebar-bottom">
         <div class="profile">
-          <div class="avatar">D</div>
+          <div class="avatar" id="profile-avatar">D</div>
           <div class="profile-meta">
-            <div class="profile-name">Danish</div>
-            <a href="#" class="small profile-link">View profile</a>
+            <div class="profile-name" id="profile-name">Danish</div>
+            <a href="#" id="profile-link" class="small profile-link">View profile</a>
           </div>
+        </div>
+        <div style="margin-top:0.6rem">
+          <button id="open-signin" class="btn btn-ghost" title="Sign in / change name">Sign in</button>
         </div>
       </div>
     </aside>
@@ -57,16 +60,16 @@
         <div class="topbar-actions">
           <input id="site-search" class="top-search" type="search" placeholder="Search classes, resources..." aria-label="Search classes and resources">
           <button id="theme-toggle" class="btn btn-ghost" aria-pressed="false" title="Toggle theme">🌙</button>
-          <button class="btn btn-primary">Sign in</button>
+          <button id="open-signin-top" class="btn btn-primary">Sign in</button>
         </div>
       </header>
 
       <main class="content" role="main">
         <!-- Classroom-like summary / hero -->
-        <section class="section hero card">
+        <section class="section hero card" id="hero">
           <div class="hero-grid">
             <div class="hero-left">
-              <h2 class="hero-title">Welcome back, Danish</h2>
+              <h2 class="hero-title">Welcome back, <span id="hero-username">Danish</span></h2>
               <p class="small">
                 Your classes, recent activity and uploaded resources are shown here. Use the left Control panel to navigate — it's highlighted in blue for quick access.
               </p>
@@ -79,15 +82,15 @@
             <div class="hero-right">
               <div class="stats-grid">
                 <div class="stat">
-                  <div class="stat-num">5</div>
+                  <div class="stat-num" id="stat-classes">3</div>
                   <div class="stat-label">Active classes</div>
                 </div>
                 <div class="stat">
-                  <div class="stat-num">28</div>
+                  <div class="stat-num" id="stat-resources">0</div>
                   <div class="stat-label">Resources</div>
                 </div>
                 <div class="stat">
-                  <div class="stat-num">12</div>
+                  <div class="stat-num" id="stat-projects">0</div>
                   <div class="stat-label">Projects</div>
                 </div>
               </div>
@@ -95,7 +98,7 @@
           </div>
         </section>
 
-        <!-- Subjects (replaced projects) -->
+        <!-- Subjects / Classes -->
         <section id="classes" class="section container card" aria-labelledby="classes-heading">
           <div class="section-header">
             <h2 id="classes-heading">Classes / Subjects</h2>
@@ -103,7 +106,7 @@
           </div>
 
           <div class="grid columns-3 u-mt-md classes-grid" id="subjects-grid" aria-live="polite">
-            <article class="class-card">
+            <article class="class-card" data-subject="Chemistry">
               <div class="class-card-top chemistry">
                 <div class="class-title">Chemistry 101</div>
                 <div class="class-sub">Lab techniques & experiments</div>
@@ -112,12 +115,12 @@
                 <p class="small">Instructor: Prof. Ayesha • 12 resources • 3 projects</p>
                 <div class="class-actions">
                   <button class="btn btn-primary join-btn" data-subject="Chemistry">Open Class</button>
-                  <button class="btn btn-ghost">Stream</button>
+                  <button class="btn btn-ghost stream-btn" data-subject="Chemistry">Stream</button>
                 </div>
               </div>
             </article>
 
-            <article class="class-card">
+            <article class="class-card" data-subject="Mathematics">
               <div class="class-card-top math">
                 <div class="class-title">Mathematics</div>
                 <div class="class-sub">Applied math & simulations</div>
@@ -126,12 +129,12 @@
                 <p class="small">Instructor: Dr. Khan • 8 resources • 4 projects</p>
                 <div class="class-actions">
                   <button class="btn btn-primary join-btn" data-subject="Mathematics">Open Class</button>
-                  <button class="btn btn-ghost">Stream</button>
+                  <button class="btn btn-ghost stream-btn" data-subject="Mathematics">Stream</button>
                 </div>
               </div>
             </article>
 
-            <article class="class-card">
+            <article class="class-card" data-subject="Physics">
               <div class="class-card-top physics">
                 <div class="class-title">Physics</div>
                 <div class="class-sub">Instrumentation & data acquisition</div>
@@ -140,7 +143,7 @@
                 <p class="small">Instructor: Eng. Rizwan • 10 resources • 5 projects</p>
                 <div class="class-actions">
                   <button class="btn btn-primary join-btn" data-subject="Physics">Open Class</button>
-                  <button class="btn btn-ghost">Stream</button>
+                  <button class="btn btn-ghost stream-btn" data-subject="Physics">Stream</button>
                 </div>
               </div>
             </article>
@@ -242,13 +245,46 @@
     </div>
   </div>
 
+  <!-- Preview modal -->
   <div id="preview-modal" class="modal" aria-hidden="true" aria-label="Preview dialog">
     <div class="modal-content card" role="dialog" aria-modal="true" aria-labelledby="preview-title">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:0.6rem;">
         <h3 id="preview-title" class="small">Preview</h3>
-        <button id="preview-close" class="btn btn-ghost" aria-label="Close preview">✕</button>
+        <div>
+          <a id="download-link" class="btn btn-ghost" download><i class="fa-regular fa-download"></i> Download</a>
+          <button id="preview-close" class="btn btn-ghost" aria-label="Close preview">✕</button>
+        </div>
       </div>
       <div id="preview-body" class="u-mt-md"></div>
+    </div>
+  </div>
+
+  <!-- Sign-in modal -->
+  <div id="signin-modal" class="modal" aria-hidden="true" aria-label="Sign in dialog">
+    <div class="modal-content card" role="dialog" aria-modal="true" aria-labelledby="signin-title">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:0.6rem;">
+        <h3 id="signin-title" class="small">Sign in / Set display name</h3>
+        <button id="signin-close" class="btn btn-ghost" aria-label="Close sign in">✕</button>
+      </div>
+      <form id="signin-form" class="u-mt-md">
+        <label class="small" for="displayName">Display name</label>
+        <input id="displayName" type="text" placeholder="Your full name" required />
+        <div style="display:flex;gap:0.5rem;margin-top:0.6rem;">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" id="signin-cancel" class="btn btn-ghost">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Stream modal -->
+  <div id="stream-modal" class="modal" aria-hidden="true" aria-label="Stream dialog">
+    <div class="modal-content card" role="dialog" aria-modal="true" aria-labelledby="stream-title">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:0.6rem;">
+        <h3 id="stream-title" class="small">Class Stream</h3>
+        <button id="stream-close" class="btn btn-ghost" aria-label="Close stream">✕</button>
+      </div>
+      <div id="stream-body" class="u-mt-md"></div>
     </div>
   </div>
 
