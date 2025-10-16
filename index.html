@@ -3,208 +3,244 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>EduHub — Practical Projects & Learning Resources</title>
-  <meta name="description" content="EduHub provides hands-on learning resources, project guides, and curated courses in electronics, automation and physical sciences. Upload, share, and learn by building." />
+  <title>EduHub — Classroom & Resources</title>
+  <meta name="description" content="EduHub — a classroom-style learning workspace for projects, course materials and community sharing." />
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
-  <nav class="nav" aria-label="Main navigation">
-    <div class="nav-inner container">
-      <a class="brand" href="#" aria-label="EduHub home">
-        <span class="logo" aria-hidden="true">E</span>
-        <span class="brand-name">EduHub</span>
-      </a>
+  <div class="app">
+    <!-- Control panel / Sidebar (blue) -->
+    <aside class="sidebar" aria-label="Control panel">
+      <div class="sidebar-top">
+        <a class="brand" href="#" aria-label="EduHub home">
+          <span class="logo">E</span>
+          <span class="brand-name">EduHub</span>
+        </a>
 
-      <input id="nav-toggle" class="nav-toggle" type="checkbox" aria-hidden="true" />
-      <label for="nav-toggle" class="nav-toggle-label" aria-hidden="true">
-        <span class="hamburger" aria-hidden="true"></span>
-      </label>
-
-      <div class="nav-menu" role="menubar" aria-label="Primary">
-        <a href="#about" role="menuitem">About</a>
-        <a href="#projects" role="menuitem">Subjects</a>
-        <a href="#learning" role="menuitem">Resources</a>
-        <a href="#dashboard" role="menuitem">Materials</a>
-        <a href="#contact" role="menuitem">Contact</a>
+        <button id="sidebar-toggle" class="btn btn-ghost sidebar-toggle" aria-expanded="true" aria-label="Toggle sidebar">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
       </div>
 
-      <div class="nav-actions">
-        <div class="search" role="search">
-          <input id="site-search" type="search" placeholder="Search projects & materials..." aria-label="Search projects and materials">
+      <nav class="control-nav" role="navigation" aria-label="Control navigation">
+        <ul>
+          <li><a href="#dashboard" class="active"><i class="fa-solid fa-house"></i><span>Dashboard</span></a></li>
+          <li><a href="#classes"><i class="fa-solid fa-chalkboard-user"></i><span>Classes</span></a></li>
+          <li><a href="#stream"><i class="fa-solid fa-bullhorn"></i><span>Stream</span></a></li>
+          <li><a href="#classwork"><i class="fa-solid fa-folder-open"></i><span>Classwork</span></a></li>
+          <li><a href="#calendar"><i class="fa-regular fa-calendar"></i><span>Calendar</span></a></li>
+          <li><a href="#people"><i class="fa-solid fa-users"></i><span>People</span></a></li>
+          <li><a href="#settings"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="profile">
+          <div class="avatar">D</div>
+          <div class="profile-meta">
+            <div class="profile-name">Danish</div>
+            <a href="#" class="small profile-link">View profile</a>
+          </div>
         </div>
-        <button id="theme-toggle" class="btn btn-ghost" aria-pressed="false" title="Toggle theme">🌙</button>
-        <a class="btn btn-primary" href="#">Sign in</a>
       </div>
+    </aside>
+
+    <!-- Main content -->
+    <div class="main">
+      <header class="topbar" role="banner">
+        <div class="topbar-left">
+          <h1 class="app-title">EduHub Classroom</h1>
+          <div class="top-subtitle small">Practical courses, projects & downloadable resources</div>
+        </div>
+
+        <div class="topbar-actions">
+          <input id="site-search" class="top-search" type="search" placeholder="Search classes, resources..." aria-label="Search classes and resources">
+          <button id="theme-toggle" class="btn btn-ghost" aria-pressed="false" title="Toggle theme">🌙</button>
+          <button class="btn btn-primary">Sign in</button>
+        </div>
+      </header>
+
+      <main class="content" role="main">
+        <!-- Classroom-like summary / hero -->
+        <section class="section hero card">
+          <div class="hero-grid">
+            <div class="hero-left">
+              <h2 class="hero-title">Welcome back, Danish</h2>
+              <p class="small">
+                Your classes, recent activity and uploaded resources are shown here. Use the left Control panel to navigate — it's highlighted in blue for quick access.
+              </p>
+              <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.6rem;">
+                <a href="#classes" class="btn btn-primary">View Classes</a>
+                <a href="#learning" class="btn btn-ghost">Upload Resource</a>
+              </div>
+            </div>
+
+            <div class="hero-right">
+              <div class="stats-grid">
+                <div class="stat">
+                  <div class="stat-num">5</div>
+                  <div class="stat-label">Active classes</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-num">28</div>
+                  <div class="stat-label">Resources</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-num">12</div>
+                  <div class="stat-label">Projects</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Subjects (replaced projects) -->
+        <section id="classes" class="section container card" aria-labelledby="classes-heading">
+          <div class="section-header">
+            <h2 id="classes-heading">Classes / Subjects</h2>
+            <div class="small">Quick access to main subjects and class-level actions</div>
+          </div>
+
+          <div class="grid columns-3 u-mt-md classes-grid" id="subjects-grid" aria-live="polite">
+            <article class="class-card">
+              <div class="class-card-top chemistry">
+                <div class="class-title">Chemistry 101</div>
+                <div class="class-sub">Lab techniques & experiments</div>
+              </div>
+              <div class="class-card-body">
+                <p class="small">Instructor: Prof. Ayesha • 12 resources • 3 projects</p>
+                <div class="class-actions">
+                  <button class="btn btn-primary join-btn" data-subject="Chemistry">Open Class</button>
+                  <button class="btn btn-ghost">Stream</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="class-card">
+              <div class="class-card-top math">
+                <div class="class-title">Mathematics</div>
+                <div class="class-sub">Applied math & simulations</div>
+              </div>
+              <div class="class-card-body">
+                <p class="small">Instructor: Dr. Khan • 8 resources • 4 projects</p>
+                <div class="class-actions">
+                  <button class="btn btn-primary join-btn" data-subject="Mathematics">Open Class</button>
+                  <button class="btn btn-ghost">Stream</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="class-card">
+              <div class="class-card-top physics">
+                <div class="class-title">Physics</div>
+                <div class="class-sub">Instrumentation & data acquisition</div>
+              </div>
+              <div class="class-card-body">
+                <p class="small">Instructor: Eng. Rizwan • 10 resources • 5 projects</p>
+                <div class="class-actions">
+                  <button class="btn btn-primary join-btn" data-subject="Physics">Open Class</button>
+                  <button class="btn btn-ghost">Stream</button>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- Upload form -->
+        <section id="learning" class="section container card" aria-labelledby="upload-heading">
+          <h2 id="upload-heading">Upload a Resource</h2>
+          <p class="small">Attach guides, schematics, lab notes, code or worksheets. Add a short title and select a subject.</p>
+
+          <form id="uploadForm" class="form" enctype="multipart/form-data" method="POST" action="/upload" aria-describedby="uploadStatus" novalidate>
+            <div class="upload-row">
+              <select name="subject" id="subject" required aria-required="true">
+                <option value="">Select subject</option>
+                <option value="Chemistry">Chemistry</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="Physics">Physics</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Automation">Automation</option>
+              </select>
+
+              <label class="file-input">
+                <span class="file-label" id="file-label-text">Choose file…</span>
+                <input id="uploadFile" type="file" name="uploadFile" required />
+              </label>
+
+              <input type="text" id="uploader" name="uploader" placeholder="Your full name" value="Danish" required />
+
+              <button type="submit" class="btn btn-primary">Upload</button>
+            </div>
+
+            <div id="uploadStatus" class="upload-status small u-mt-md" aria-live="polite" role="status"></div>
+          </form>
+        </section>
+
+        <!-- Materials table -->
+        <section id="dashboard" class="section container card" aria-labelledby="dashboard-heading">
+          <h2 id="dashboard-heading">Materials</h2>
+
+          <div class="filters-row u-mt-md">
+            <label class="small">Subject
+              <select id="subjectFilter" aria-label="Filter by subject">
+                <option value="all">All</option>
+                <option value="Chemistry">Chemistry</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="Physics">Physics</option>
+                <option value="Electronics">Electronics</option>
+              </select>
+            </label>
+
+            <label class="small">Format
+              <select id="typeFilter" aria-label="Filter by file format">
+                <option value="all">All</option>
+                <option value="pdf">PDF</option>
+                <option value="docx">Word</option>
+                <option value="zip">ZIP</option>
+              </select>
+            </label>
+
+            <label class="small" style="margin-left:auto;">Sort
+              <select id="sort" aria-label="Sort materials">
+                <option value="new">Newest</option>
+                <option value="old">Oldest</option>
+                <option value="name">Name (A–Z)</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="table-wrapper u-mt-md" role="region" aria-label="Uploaded materials">
+            <table id="fileTable" aria-live="polite">
+              <thead>
+                <tr>
+                  <th scope="col">Format</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Subject</th>
+                  <th scope="col">Contributor</th>
+                  <th scope="col">Uploaded</th>
+                  <th scope="col">Preview</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- JS populates rows -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="contact" class="section container card center">
+          <h2>Contact & Collaboration</h2>
+          <p class="small">Email <a href="mailto:hello@eduhub.example">hello@eduhub.example</a> to propose a course or contribute resources.</p>
+        </section>
+      </main>
+
+      <footer class="footer small center">
+        © <strong>EduHub</strong> — Built for learners
+      </footer>
     </div>
-  </nav>
-
-  <main>
-    <header class="section hero container" role="banner">
-      <div class="grid columns-2" style="align-items:center;">
-        <div>
-          <h1>Learn by building — practical electronics, automation & science</h1>
-          <p class="small u-mb-md">
-            EduHub is a community-focused library of project guides, course-like learning paths, and downloadable resources.
-            Follow step-by-step tutorials, download design files and notes, and contribute your own materials so others can learn from your experience.
-          </p>
-
-          <div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
-            <a href="#learning" class="btn btn-primary" aria-describedby="upload-cta">Upload Resource</a>
-            <a href="#projects" class="btn btn-ghost">Browse Subjects</a>
-          </div>
-
-          <p id="upload-cta" class="small" style="margin-top:0.6rem;color:var(--muted)">
-            Tip: include a short summary and an image so your resource is easy to discover.
-          </p>
-        </div>
-
-        <div class="card center" aria-hidden="true">
-          <img src="https://via.placeholder.com/720x420?text=Hands-on+Learning+at+EduHub" alt="Student soldering a PCB next to a laptop showing a schematic — Learn by building" style="width:100%;border-radius:8px;">
-        </div>
-      </div>
-    </header>
-
-    <section id="about" class="section container card" aria-labelledby="about-heading">
-      <h2 id="about-heading">About EduHub</h2>
-      <p>
-        EduHub is designed for learners and makers who prefer hands-on learning over passive reading. Materials here are practical:
-        annotated schematics, parts lists, step-by-step assembly guides, example code, and lab notes. Contributors are encouraged to include
-        expected learning outcomes, estimated completion time, and safety notes where appropriate.
-      </p>
-    </section>
-
-    <section id="projects" class="section container card" aria-labelledby="projects-heading">
-      <h2 id="projects-heading">Main Subjects</h2>
-      <p class="small">Browse subject areas — each subject groups projects and resources with clear learning goals and downloadable assets.</p>
-
-      <div class="grid columns-3 u-mt-md" id="projects-grid" aria-live="polite">
-        <article class="card" aria-labelledby="chemistry">
-          <img src="https://via.placeholder.com/400x220?text=Chemistry" alt="Chemistry lab setup" style="width:100%;border-radius:8px;">
-          <h3 id="chemistry">Chemistry</h3>
-          <p class="small">Lab experiments, measurement techniques, and practical guides for safe hands-on chemistry. Includes reagent lists, expected hazards and step-by-step procedures.</p>
-          <div style="margin-top:0.6rem">
-            <a class="btn btn-ghost" href="#dashboard?subject=Chemistry">Explore Chemistry</a>
-          </div>
-        </article>
-
-        <article class="card" aria-labelledby="mathematics">
-          <img src="https://via.placeholder.com/400x220?text=Mathematics" alt="Mathematics diagrams and notes" style="width:100%;border-radius:8px;">
-          <h3 id="mathematics">Mathematics</h3>
-          <p class="small">Applied math resources, worked examples, and simulation notebooks for modeling physical systems and analyzing data.</p>
-          <div style="margin-top:0.6rem">
-            <a class="btn btn-ghost" href="#dashboard?subject=Mathematics">Explore Mathematics</a>
-          </div>
-        </article>
-
-        <article class="card" aria-labelledby="physics">
-          <img src="https://via.placeholder.com/400x220?text=Physics" alt="Physics experiment and instruments" style="width:100%;border-radius:8px;">
-          <h3 id="physics">Physics</h3>
-          <p class="small">Experimental guides, measurement tips, and electronics projects connected to physics concepts — instrumentation, sensors and data acquisition.</p>
-          <div style="margin-top:0.6rem">
-            <a class="btn btn-ghost" href="#dashboard?subject=Physics">Explore Physics</a>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section id="learning" class="section container card" aria-labelledby="upload-heading">
-      <h2 id="upload-heading">Upload a Resource</h2>
-      <p class="small">Share tutorials, code, schematics or lab notes. Please include a brief description, subject tags, and any safety considerations.</p>
-
-      <form id="uploadForm" class="form" enctype="multipart/form-data" method="POST" action="/upload" aria-describedby="uploadStatus" novalidate>
-        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center;">
-          <label for="subject" class="small sr-only">Subject</label>
-          <select name="subject" id="subject" required aria-required="true">
-            <option value="">Select subject</option>
-            <option value="Electronics">Electronics</option>
-            <option value="Automation">Automation</option>
-            <option value="Physics">Physics</option>
-            <option value="Chemistry">Chemistry</option>
-            <option value="Mathematics">Mathematics</option>
-          </select>
-
-          <label class="file-input" aria-label="Choose file to upload">
-            <span class="file-label" id="file-label-text">Choose file…</span>
-            <input id="uploadFile" type="file" name="uploadFile" required aria-required="true" />
-          </label>
-
-          <input type="text" id="uploader" name="uploader" placeholder="Your full name" value="Danish" required style="min-width:160px;" />
-
-          <button type="submit" class="btn btn-primary">Upload</button>
-        </div>
-
-        <div id="uploadStatus" class="upload-status small u-mt-md" aria-live="polite" role="status"></div>
-
-        <div class="small u-mt-md">
-          By uploading you confirm you have the rights to share this material and that it does not violate third-party copyrights.
-        </div>
-      </form>
-    </section>
-
-    <section id="dashboard" class="section container card" aria-labelledby="dashboard-heading">
-      <h2 id="dashboard-heading">Materials & Filters</h2>
-
-      <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;margin-top:0.5rem;">
-        <div>
-          <label for="subjectFilter" class="small">Subject</label>
-          <select id="subjectFilter" aria-label="Filter by subject">
-            <option value="all">All</option>
-            <option value="Electronics">Electronics</option>
-            <option value="Automation">Automation</option>
-            <option value="Physics">Physics</option>
-            <option value="Chemistry">Chemistry</option>
-            <option value="Mathematics">Mathematics</option>
-          </select>
-        </div>
-
-        <div>
-          <label for="typeFilter" class="small">Format</label>
-          <select id="typeFilter" aria-label="Filter by file format">
-            <option value="all">All</option>
-            <option value="pdf">PDF</option>
-            <option value="docx">Word</option>
-            <option value="zip">ZIP / Archive</option>
-          </select>
-        </div>
-
-        <div style="margin-left:auto;">
-          <label for="sort" class="small sr-only">Sort</label>
-          <select id="sort" aria-label="Sort materials">
-            <option value="new">Newest</option>
-            <option value="old">Oldest</option>
-            <option value="name">Name (A–Z)</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="table-wrapper u-mt-md" role="region" aria-label="Uploaded materials">
-        <table id="fileTable" aria-live="polite">
-          <thead>
-            <tr>
-              <th scope="col">Format</th>
-              <th scope="col">Title</th>
-              <th scope="col">Subject</th>
-              <th scope="col">Contributor</th>
-              <th scope="col">Uploaded</th>
-              <th scope="col">Preview</th>
-              <th scope="col">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- JavaScript renders uploaded materials here -->
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section id="contact" class="section container card center" aria-labelledby="contact-heading">
-      <h2 id="contact-heading">Contact & Collaboration</h2>
-      <p class="small">Want to contribute or collaborate? Email us at <a href="mailto:hello@eduhub.example">hello@eduhub.example</a> with a short description of your resource or project.</p>
-      <p class="small">If your submission involves hardware, include safety notes and recommended protective measures.</p>
-      <p class="small">© <strong>EduHub</strong></p>
-    </section>
-  </main>
+  </div>
 
   <div id="preview-modal" class="modal" aria-hidden="true" aria-label="Preview dialog">
     <div class="modal-content card" role="dialog" aria-modal="true" aria-labelledby="preview-title">
