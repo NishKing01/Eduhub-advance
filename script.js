@@ -1,12 +1,10 @@
-// EduHub small site script (updated)
-// - Theme toggle (persisted)
-// - Mobile menu (checkbox handled by CSS)
-// - Upload simulation + client-side rendering of uploaded table
-// - Filters, preview modal, delete
-// - Added pointer/touch handlers to give a consistent "pressed" color change on buttons
 
 document.addEventListener('DOMContentLoaded', () => {
   const root = document.documentElement;
+
+  // UI elements
+  const sidebar = document.querySelector('.sidebar');
+  const sidebarToggle = document.getElementById('sidebar-toggle');
   const themeToggle = document.getElementById('theme-toggle');
   const uploadForm = document.getElementById('uploadForm');
   const uploadStatus = document.getElementById('uploadStatus');
@@ -18,65 +16,52 @@ document.addEventListener('DOMContentLoaded', () => {
   const previewModal = document.getElementById('preview-modal');
   const previewBody = document.getElementById('preview-body');
   const previewClose = document.getElementById('preview-close');
+  const fileLabelText = document.getElementById('file-label-text');
 
-  // Initialize theme
+  // Sidebar toggle (collapse / expand)
+  if (sidebarToggle) {
+    sidebarToggle.addEventListener('click', () => {
+      const collapsed = sidebar.classList.toggle('collapsed');
+      sidebarToggle.setAttribute('aria-expanded', String(!collapsed));
+    });
+  }
+
+  // Theme initialization & toggle (persist)
   const stored = localStorage.getItem('eduhub-theme');
   if (stored === 'dark') {
     root.setAttribute('data-theme', 'dark');
-    themeToggle.textContent = '☀️';
-    themeToggle.setAttribute('aria-pressed', 'true');
+    if (themeToggle) { themeToggle.textContent = '☀️'; themeToggle.setAttribute('aria-pressed','true'); }
   } else {
-    themeToggle.textContent = '🌙';
-    themeToggle.setAttribute('aria-pressed', 'false');
+    if (themeToggle) { themeToggle.textContent = '🌙'; themeToggle.setAttribute('aria-pressed','false'); }
   }
-
-  themeToggle.addEventListener('click', () => {
+  themeToggle?.addEventListener('click', () => {
     const isDark = root.getAttribute('data-theme') === 'dark';
-    if (isDark) {
-      root.removeAttribute('data-theme');
-      localStorage.setItem('eduhub-theme', 'light');
-      themeToggle.textContent = '🌙';
-      themeToggle.setAttribute('aria-pressed', 'false');
-    } else {
-      root.setAttribute('data-theme', 'dark');
-      localStorage.setItem('eduhub-theme', 'dark');
-      themeToggle.textContent = '☀️';
-      themeToggle.setAttribute('aria-pressed', 'true');
-    }
+    if (isDark) { root.removeAttribute('data-theme'); localStorage.setItem('eduhub-theme','light'); themeToggle.textContent = '🌙'; themeToggle.setAttribute('aria-pressed','false'); }
+    else { root.setAttribute('data-theme','dark'); localStorage.setItem('eduhub-theme','dark'); themeToggle.textContent = '☀️'; themeToggle.setAttribute('aria-pressed','true'); }
   });
 
-  // Attach pointer/touch handlers to provide consistent pressed visual feedback on buttons
+  // Add reliable pressed state for buttons (pointer events + fallback)
   (function attachPressedHandlers() {
-    const pressable = document.querySelectorAll('.btn');
-    pressable.forEach(el => {
-      // pointer events - most robust across mouse/touch/stylus
-      el.addEventListener('pointerdown', onPressStart, {passive: true});
-      el.addEventListener('pointerup', onPressEnd);
-      el.addEventListener('pointercancel', onPressEnd);
-      el.addEventListener('pointerleave', onPressEnd);
-
-      // for older devices, also fallback to touch events (no-op if pointer events work)
-      el.addEventListener('touchstart', onPressStart, {passive: true});
-      el.addEventListener('touchend', onPressEnd);
-      el.addEventListener('touchcancel', onPressEnd);
+    const pressables = document.querySelectorAll('.btn');
+    pressables.forEach(el => {
+      el.addEventListener('pointerdown', onStart, {passive:true});
+      el.addEventListener('pointerup', onEnd);
+      el.addEventListener('pointerleave', onEnd);
+      el.addEventListener('pointercancel', onEnd);
+      el.addEventListener('touchstart', onStart, {passive:true});
+      el.addEventListener('touchend', onEnd);
+      el.addEventListener('touchcancel', onEnd);
     });
-
-    function onPressStart(e) {
-      // add class to reflect pressed state; CSS handles visual change
-      e.currentTarget.classList.add('pressed');
-    }
-    function onPressEnd(e) {
-      e.currentTarget.classList.remove('pressed');
-    }
+    function onStart(e){ e.currentTarget.classList.add('pressed'); }
+    function onEnd(e){ e.currentTarget.classList.remove('pressed'); }
   })();
 
-  // In-memory "uploaded files" store (replace with real backend)
+  // In-memory files array for demo
   const files = [];
 
   // Helpers
-  function fmtDate(ts = Date.now()) {
-    return new Date(ts).toLocaleString();
-  }
+  function fmtDate(ts = Date.now()){ return new Date(ts).toLocaleString(); }
+  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
   function fileIcon(type, name = '') {
     if (type.includes('pdf') || name.toLowerCase().endsWith('.pdf')) return '<i class="fa-regular fa-file-pdf" aria-hidden="true"></i>';
     if (type.includes('zip') || name.toLowerCase().endsWith('.zip')) return '<i class="fa-regular fa-file-zipper" aria-hidden="true"></i>';
@@ -106,27 +91,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  }
-
-  // Upload handling (simulated)
-  uploadForm.addEventListener('submit', (ev) => {
+  // Upload form (simulated)
+  uploadForm?.addEventListener('submit', (ev) => {
     ev.preventDefault();
     const fileInput = document.getElementById('uploadFile');
     const subject = document.getElementById('subject').value;
     const uploader = document.getElementById('uploader').value || 'Anonymous';
 
-    if (!fileInput.files.length) {
-      uploadStatus.textContent = 'Please choose a file to upload.';
+    if (!fileInput || !fileInput.files.length) {
+      uploadStatus.textContent = 'Choose a file to upload.';
       return;
     }
-
     const file = fileInput.files[0];
     uploadStatus.textContent = 'Uploading…';
-    uploadStatus.classList.remove('small');
 
-    // simulate upload delay
     setTimeout(() => {
       const entry = {
         name: file.name,
@@ -135,36 +113,30 @@ document.addEventListener('DOMContentLoaded', () => {
         uploader,
         ts: Date.now(),
         size: file.size,
-        blob: URL.createObjectURL(file) // for preview demo (revoke eventually)
+        blob: URL.createObjectURL(file)
       };
       files.unshift(entry);
       uploadStatus.textContent = `Uploaded ${file.name}`;
       renderTable(applyFilters());
-      // clear file input and file label
       fileInput.value = '';
-      const fileLabel = document.getElementById('file-label-text');
-      if (fileLabel) fileLabel.textContent = 'Choose file…';
-      setTimeout(() => uploadStatus.textContent = '', 3000);
-    }, 700 + Math.random() * 800);
+      if (fileLabelText) fileLabelText.textContent = 'Choose file…';
+      setTimeout(()=>uploadStatus.textContent = '', 2500);
+    }, 600 + Math.random() * 700);
   });
 
-  // Update chosen filename in the UI
+  // Show selected filename
   const realFileInput = document.getElementById('uploadFile');
-  const fileLabelText = document.getElementById('file-label-text');
-  if (realFileInput && fileLabelText) {
-    realFileInput.addEventListener('change', () => {
-      const f = realFileInput.files[0];
-      fileLabelText.textContent = f ? f.name : 'Choose file…';
-    });
-  }
+  realFileInput?.addEventListener('change', () => {
+    const f = realFileInput.files[0];
+    if (fileLabelText) fileLabelText.textContent = f ? f.name : 'Choose file…';
+  });
 
-  // Filters + search + sort
+  // Filters/search/sort
   function applyFilters() {
     const s = subjectFilter?.value || 'all';
     const t = typeFilter?.value || 'all';
     const q = (searchInput?.value || '').toLowerCase().trim();
     const sort = sortSelect?.value || 'new';
-
     let out = files.filter(f => {
       if (s !== 'all' && f.subject !== s) return false;
       if (t !== 'all') {
@@ -176,22 +148,20 @@ document.addEventListener('DOMContentLoaded', () => {
       return true;
     });
 
-    if (sort === 'new') out.sort((a,b) => b.ts - a.ts);
-    else if (sort === 'old') out.sort((a,b) => a.ts - b.ts);
-    else if (sort === 'name') out.sort((a,b) => a.name.localeCompare(b.name, undefined, {sensitivity: 'base'}));
+    if (sort === 'new') out.sort((a,b)=>b.ts-a.ts);
+    else if (sort === 'old') out.sort((a,b)=>a.ts-b.ts);
+    else if (sort === 'name') out.sort((a,b)=>a.name.localeCompare(b.name, undefined, {sensitivity:'base'}));
 
     return out;
   }
 
   [subjectFilter, typeFilter, sortSelect, searchInput].forEach(el => {
     if (!el) return;
-    el.addEventListener('input', () => {
-      renderTable(applyFilters());
-    });
+    el.addEventListener('input', () => renderTable(applyFilters()));
   });
 
-  // Delegate preview & delete from table body
-  fileTableBody.addEventListener('click', (ev) => {
+  // Table actions: preview & delete
+  fileTableBody?.addEventListener('click', (ev) => {
     const previewBtn = ev.target.closest('.preview-btn');
     if (previewBtn) {
       const idx = Number(previewBtn.dataset.idx);
@@ -205,7 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const fileList = applyFilters();
       const file = fileList[idx];
       if (!file) return;
-      // remove from master files array
       const masterIdx = files.findIndex(f => f.ts === file.ts && f.name === file.name);
       if (masterIdx !== -1) files.splice(masterIdx, 1);
       renderTable(applyFilters());
@@ -213,42 +182,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Preview modal
   function openPreview(file) {
     previewBody.innerHTML = '';
-    // Attempt to show preview inline for common types
     if (file.type.includes('image') || /\.(png|jpe?g|gif|svg)$/i.test(file.name)) {
-      const img = document.createElement('img');
-      img.src = file.blob;
-      img.alt = file.name;
-      previewBody.appendChild(img);
+      const img = document.createElement('img'); img.src = file.blob; img.alt = file.name; previewBody.appendChild(img);
     } else if (file.type.includes('pdf') || file.name.toLowerCase().endsWith('.pdf')) {
-      const iframe = document.createElement('iframe');
-      iframe.src = file.blob;
-      iframe.style.width = '100%';
-      iframe.style.height = '70vh';
-      previewBody.appendChild(iframe);
+      const iframe = document.createElement('iframe'); iframe.src = file.blob; iframe.style.width='100%'; iframe.style.height='70vh'; previewBody.appendChild(iframe);
     } else {
-      const p = document.createElement('p');
-      p.className = 'small';
-      p.textContent = `Preview not available for ${file.name}. Download to view.`;
-      previewBody.appendChild(p);
+      const p = document.createElement('p'); p.className='small'; p.textContent = `Preview not available for ${file.name}. Download to view.`; previewBody.appendChild(p);
     }
-    previewModal.setAttribute('aria-hidden', 'false');
+    previewModal?.setAttribute('aria-hidden','false');
   }
 
-  previewClose?.addEventListener('click', () => {
-    previewModal.setAttribute('aria-hidden', 'true');
-    previewBody.innerHTML = '';
+  previewClose?.addEventListener('click', () => { previewModal?.setAttribute('aria-hidden','true'); previewBody.innerHTML = ''; });
+  previewModal?.addEventListener('click', (ev) => { if (ev.target === previewModal) { previewModal.setAttribute('aria-hidden','true'); previewBody.innerHTML = ''; } });
+
+  // Class card actions: open class -> filter dashboard by subject
+  document.querySelectorAll('.join-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const subject = btn.dataset.subject;
+      // set filter and scroll to dashboard
+      const sf = document.getElementById('subjectFilter');
+      if (sf) { sf.value = subject; sf.dispatchEvent(new Event('input')); }
+      const el = document.getElementById('dashboard');
+      if (el) el.scrollIntoView({behavior:'smooth'});
+    });
   });
 
-  previewModal?.addEventListener('click', (ev) => {
-    if (ev.target === previewModal) {
-      previewModal.setAttribute('aria-hidden', 'true');
-      previewBody.innerHTML = '';
-    }
-  });
-
-  // Initial render
+  // Initial render (no files)
   renderTable(files);
 });
