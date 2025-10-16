@@ -1,3 +1,12 @@
+// EduHub script — calendar implemented, stream removed, all buttons functional
+// - Sidebar toggle
+// - Theme toggle (persisted)
+// - Sign-in modal (save display name to localStorage and update UI)
+// - Upload simulation + persisted example materials
+// - Table: preview (with download), delete (revokes blob URLs), filters, sort, search
+// - Calendar: month view, navigate months, add/view/delete events (persisted to localStorage)
+// - Reliable press feedback for buttons via pointer events
+
 document.addEventListener('DOMContentLoaded', () => {
   const root = document.documentElement;
 
@@ -24,15 +33,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const signinCancel = document.getElementById('signin-cancel');
   const displayNameInput = document.getElementById('displayName');
 
-  const streamModal = document.getElementById('stream-modal');
-  const streamBody = document.getElementById('stream-body');
-  const streamClose = document.getElementById('stream-close');
-
   const profileNameEl = document.getElementById('profile-name');
   const profileAvatar = document.getElementById('profile-avatar');
   const heroUsername = document.getElementById('hero-username');
   const statResources = document.getElementById('stat-resources');
   const statProjects = document.getElementById('stat-projects');
+
+  // Calendar elements
+  const calendarGrid = document.getElementById('calendar-grid');
+  const calendarTitle = document.getElementById('calendar-title');
+  const prevMonthBtn = document.getElementById('prev-month');
+  const nextMonthBtn = document.getElementById('next-month');
+  const openAddEvent = document.getElementById('open-add-event');
+  const eventModal = document.getElementById('event-modal');
+  const eventBody = document.getElementById('event-body');
+  const eventDateLabel = document.getElementById('event-date');
+  const eventList = document.getElementById('event-list');
+  const eventClose = document.getElementById('event-close');
+  const addEventForm = document.getElementById('add-event-form');
+  const eventTitleInput = document.getElementById('event-title-input');
+  const eventSubjectSelect = document.getElementById('event-subject');
 
   // Press feedback for buttons (pointer events + touch fallback)
   (function attachPressed() {
@@ -106,65 +126,12 @@ document.addEventListener('DOMContentLoaded', () => {
     profileNameEl.textContent = name;
     profileAvatar.textContent = name[0] ? name[0].toUpperCase() : 'U';
     heroUsername.textContent = name;
-    // update uploader default input
     const uploaderInput = document.getElementById('uploader');
     if (uploaderInput) uploaderInput.value = name;
   }
-
   // Initialize profile from storage
   const storedUser = localStorage.getItem('eduhub-user');
   if (storedUser) updateProfileName(storedUser);
-
-  // Stream modal: sample posts per class
-  const sampleStreams = {
-    Chemistry: [
-      {ts: Date.now()-3600*1000, text: 'New lab protocol uploaded: acid-base titration notes.'},
-      {ts: Date.now()-7200*1000, text: 'Reminder: bring goggles to next lab.'}
-    ],
-    Mathematics: [
-      {ts: Date.now()-5400*1000, text: 'Problem set 3 solutions posted.'},
-      {ts: Date.now()-20000*1000, text: 'Live workshop on simulations this Friday.'}
-    ],
-    Physics: [
-      {ts: Date.now()-100000, text: 'DAQ tutorial video now available.'},
-      {ts: Date.now()-2500000, text: 'Group project templates uploaded.'}
-    ]
-  };
-
-  function openStream(subject) {
-    const posts = sampleStreams[subject] || [{ts:Date.now(), text:'No recent activity.'}];
-    streamBody.innerHTML = '';
-    const h = document.createElement('div');
-    h.className = 'small';
-    h.innerHTML = `<strong>${escapeHtml(subject)} — recent activity</strong>`;
-    streamBody.appendChild(h);
-    posts.forEach(p => {
-      const div = document.createElement('div');
-      div.className = 'u-mt-md';
-      div.innerHTML = `<div class="small" style="color:var(--muted)">${new Date(p.ts).toLocaleString()}</div><div>${escapeHtml(p.text)}</div>`;
-      streamBody.appendChild(div);
-    });
-    streamModal.setAttribute('aria-hidden','false');
-  }
-  streamClose?.addEventListener('click', ()=>streamModal.setAttribute('aria-hidden','true'));
-
-  // Class card actions: join/open class (filter + scroll)
-  document.querySelectorAll('.join-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const subject = btn.dataset.subject;
-      const sf = document.getElementById('subjectFilter');
-      if (sf) {
-        sf.value = subject;
-        sf.dispatchEvent(new Event('input'));
-      }
-      document.getElementById('dashboard')?.scrollIntoView({behavior:'smooth'});
-    });
-  });
-  document.querySelectorAll('.stream-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      openStream(btn.dataset.subject);
-    });
-  });
 
   // Utility helpers
   function escapeHtml(s){ return String(s).replace(/[&<>"']/g, (m)=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
@@ -179,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // In-memory files array + persist in localStorage
   let files = [];
-  const storeKey = 'eduhub-files-v1';
+  const filesKey = 'eduhub-files-v1';
 
   // Seed with example materials if none in storage
   function seedExamples() {
@@ -196,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function loadFiles() {
     try {
-      const raw = localStorage.getItem(storeKey);
+      const raw = localStorage.getItem(filesKey);
       if (raw) files = JSON.parse(raw);
       else seedExamples();
     } catch (e) {
@@ -206,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderStats();
   }
   function saveFiles() {
-    try { localStorage.setItem(storeKey, JSON.stringify(files)); } catch(e){ /* ignore */ }
+    try { localStorage.setItem(filesKey, JSON.stringify(files)); } catch(e){ /* ignore */ }
     renderStats();
   }
 
@@ -271,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ev.preventDefault();
     const fileInput = document.getElementById('uploadFile');
     const subject = document.getElementById('subject').value || 'Unspecified';
-    const uploader = document.getElementById('uploader').value || (localStorage.getItem('eduhub-user') || 'Anonymous');
+    const uploader = document.getElementById('uploader')?.value || (localStorage.getItem('eduhub-user') || 'Anonymous');
 
     if (!fileInput || !fileInput.files.length) {
       uploadStatus.textContent = 'Choose a file to upload.';
@@ -337,7 +304,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const idx = Number(dlBtn.dataset.idx);
       const file = applyFilters()[idx];
       if (!file) return;
-      // if blob URL exists, navigate to it (download attr on link in preview modal)
       if (file.blob) {
         const a = document.createElement('a');
         a.href = file.blob;
@@ -377,20 +343,16 @@ document.addEventListener('DOMContentLoaded', () => {
   previewClose?.addEventListener('click', ()=>{ previewModal.setAttribute('aria-hidden','true'); previewBody.innerHTML=''; });
   previewModal?.addEventListener('click', (ev)=>{ if(ev.target===previewModal){ previewModal.setAttribute('aria-hidden','true'); previewBody.innerHTML=''; } });
 
-  // Stream modal close handled above
-  streamClose?.addEventListener('click', ()=>streamModal.setAttribute('aria-hidden','true'));
-
-  // Search in topbar: searching classes and files
-  searchInput?.addEventListener('input', (e) => {
-    const q = (e.target.value || '').toLowerCase();
-    // Filter files table
-    renderTable(applyFilters());
-    // highlight classes matching search
-    document.querySelectorAll('.class-card').forEach(card => {
-      const subject = (card.dataset.subject || '').toLowerCase();
-      const title = (card.querySelector('.class-title')?.textContent || '').toLowerCase();
-      const match = q && (subject.includes(q) || title.includes(q));
-      card.style.boxShadow = match ? '0 8px 30px rgba(26,115,232,0.12)' : '';
+  // Class card actions: join/open class (filter + scroll)
+  document.querySelectorAll('.join-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const subject = btn.dataset.subject;
+      const sf = document.getElementById('subjectFilter');
+      if (sf) {
+        sf.value = subject;
+        sf.dispatchEvent(new Event('input'));
+      }
+      document.getElementById('dashboard')?.scrollIntoView({behavior:'smooth'});
     });
   });
 
@@ -409,7 +371,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Simple helper to render stats
   function renderStats() {
     statResources.textContent = files.length;
-    // projects count is not modeled — keep as 0 or count zip files as projects
     statProjects.textContent = files.filter(f => f.name.toLowerCase().includes('project') || f.type === 'application/zip').length;
   }
 
@@ -419,8 +380,231 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initial table render
   renderTable(applyFilters());
 
-  // Utility: escape HTML already defined
+  /* --------------------------
+     Calendar implementation
+     - events stored in localStorage (eduhub-events-v1)
+     - month grid with days; click day -> open event modal
+     - event modal lists events for day; add / delete events
+     -------------------------- */
+  const eventsKey = 'eduhub-events-v1';
+  let events = []; // { id, dateISO (YYYY-MM-DD), title, subject, createdAt }
 
-  // Helper exposure for debug (optional)
-  window._eduhub = { files, renderTable, applyFilters, openPreview, openStream };
+  function loadEvents() {
+    try {
+      const raw = localStorage.getItem(eventsKey);
+      if (raw) events = JSON.parse(raw);
+      else events = [];
+    } catch(e) {
+      console.error('Failed to load events', e);
+      events = [];
+    }
+  }
+  function saveEvents() {
+    try { localStorage.setItem(eventsKey, JSON.stringify(events)); } catch(e){}
+  }
+
+  // Calendar state
+  let viewDate = new Date(); // current month focus
+
+  function startOfMonth(d) { return new Date(d.getFullYear(), d.getMonth(), 1); }
+  function endOfMonth(d) { return new Date(d.getFullYear(), d.getMonth()+1, 0); }
+
+  function formatMonthTitle(d) {
+    return d.toLocaleString(undefined, {month:'long', year:'numeric'});
+  }
+
+  function renderCalendar() {
+    if (!calendarGrid) return;
+    calendarGrid.innerHTML = '';
+
+    const first = startOfMonth(viewDate);
+    const last = endOfMonth(viewDate);
+
+    const startWeekday = first.getDay(); // 0=Sun
+    const daysInMonth = last.getDate();
+
+    calendarTitle.textContent = formatMonthTitle(viewDate);
+
+    // show weekday headings
+    const weekdays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    weekdays.forEach(w => {
+      const h = document.createElement('div');
+      h.className = 'calendar-day';
+      h.style.minHeight = '28px';
+      h.style.padding = '6px';
+      h.style.fontWeight = '700';
+      h.textContent = w;
+      calendarGrid.appendChild(h);
+    });
+
+    // calculate cells before month (previous month's tail)
+    const prevTail = startWeekday; // number of preceding days
+    const prevMonthLast = new Date(first.getFullYear(), first.getMonth(), 0).getDate();
+
+    const totalCells = 7*6; // 6 weeks displayed
+    let dayCounter = 1;
+    for (let i = 0; i < totalCells; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'calendar-day';
+      // calculate actual date for cell
+      let cellDate;
+      if (i < prevTail) {
+        const day = prevMonthLast - prevTail + 1 + i;
+        const dt = new Date(first.getFullYear(), first.getMonth()-1, day);
+        cell.classList.add('outside');
+        cellDate = dt;
+      } else if (dayCounter <= daysInMonth) {
+        const dt = new Date(first.getFullYear(), first.getMonth(), dayCounter);
+        cellDate = dt;
+        dayCounter++;
+      } else {
+        const day = i - prevTail - daysInMonth + 1;
+        const dt = new Date(first.getFullYear(), first.getMonth()+1, day);
+        cell.classList.add('outside');
+        cellDate = dt;
+      }
+
+      const iso = cellDate.toISOString().slice(0,10);
+      const dayNum = document.createElement('div');
+      dayNum.className = 'day-num';
+      dayNum.textContent = String(cellDate.getDate());
+      cell.appendChild(dayNum);
+
+      // show event pills (up to 2) and count badge
+      const dayEvents = events.filter(e => e.dateISO === iso);
+      dayEvents.slice(0,2).forEach(ev => {
+        const pill = document.createElement('div');
+        pill.className = 'event-pill';
+        pill.textContent = ev.title.length > 20 ? ev.title.slice(0,18)+'…' : ev.title;
+        cell.appendChild(pill);
+      });
+      if (dayEvents.length > 2) {
+        const c = document.createElement('div');
+        c.className = 'event-count';
+        c.textContent = String(dayEvents.length);
+        cell.appendChild(c);
+      }
+
+      cell.dataset.date = iso;
+      cell.addEventListener('click', () => openEventModal(iso));
+      calendarGrid.appendChild(cell);
+    }
+  }
+
+  // calendar nav
+  prevMonthBtn?.addEventListener('click', () => { viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth()-1, 1); renderCalendar(); });
+  nextMonthBtn?.addEventListener('click', () => { viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth()+1, 1); renderCalendar(); });
+  openAddEvent?.addEventListener('click', () => {
+    // open add for today's date
+    const todayISO = (new Date()).toISOString().slice(0,10);
+    openEventModal(todayISO);
+  });
+
+  // Event modal: open, list events, add new, delete event
+  function openEventModal(dateISO) {
+    eventModal.setAttribute('aria-hidden','false');
+    eventDateLabel.textContent = new Date(dateISO).toLocaleDateString(undefined, {weekday:'short', year:'numeric', month:'short', day:'numeric'});
+    renderEventList(dateISO);
+    // store current open date on modal dataset
+    eventModal.dataset.date = dateISO;
+    eventTitleInput.value = '';
+    eventSubjectSelect.value = '';
+    eventTitleInput.focus();
+  }
+
+  function renderEventList(dateISO) {
+    eventList.innerHTML = '';
+    const dayEvents = events.filter(e => e.dateISO === dateISO).sort((a,b)=>a.createdAt - b.createdAt);
+    if (!dayEvents.length) {
+      eventList.innerHTML = '<div class="small center">No events for this day.</div>';
+      return;
+    }
+    dayEvents.forEach(ev => {
+      const row = document.createElement('div');
+      row.style.display = 'flex';
+      row.style.justifyContent = 'space-between';
+      row.style.alignItems = 'center';
+      row.style.gap = '0.5rem';
+      row.style.padding = '0.5rem 0';
+      row.innerHTML = `<div><div style="font-weight:700">${escapeHtml(ev.title)}</div><div class="small" style="color:var(--muted)">${escapeHtml(ev.subject || '')}</div></div>
+        <div style="display:flex;gap:0.4rem;align-items:center">
+          <button class="btn btn-ghost edit-event" data-id="${ev.id}">Edit</button>
+          <button class="btn btn-danger del-event" data-id="${ev.id}">Delete</button>
+        </div>`;
+      eventList.appendChild(row);
+    });
+  }
+
+  addEventForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const dateISO = eventModal.dataset.date;
+    const title = (eventTitleInput.value || '').trim();
+    const subject = (eventSubjectSelect.value || '').trim();
+    if (!dateISO || !title) return;
+    const ev = { id: Date.now() + Math.floor(Math.random()*1000), dateISO, title, subject, createdAt: Date.now() };
+    events.push(ev);
+    saveEvents();
+    renderEventList(dateISO);
+    renderCalendar();
+    eventTitleInput.value = '';
+    eventSubjectSelect.value = '';
+  });
+
+  // Event modal actions (delegate edit/delete)
+  eventList?.addEventListener('click', (e) => {
+    const del = e.target.closest('.del-event');
+    if (del) {
+      const id = Number(del.dataset.id);
+      events = events.filter(ev => ev.id !== id);
+      saveEvents();
+      const dateISO = eventModal.dataset.date;
+      renderEventList(dateISO);
+      renderCalendar();
+      return;
+    }
+    const edit = e.target.closest('.edit-event');
+    if (edit) {
+      const id = Number(edit.dataset.id);
+      const ev = events.find(x=>x.id===id);
+      if (!ev) return;
+      // populate form for quick edit (naive)
+      eventTitleInput.value = ev.title;
+      eventSubjectSelect.value = ev.subject || '';
+      // remove the old event (will be re-added on submit)
+      events = events.filter(x=>x.id!==id);
+      saveEvents();
+      renderEventList(eventModal.dataset.date);
+      renderCalendar();
+      eventTitleInput.focus();
+    }
+  });
+
+  eventClose?.addEventListener('click', ()=>{ eventModal.setAttribute('aria-hidden','true'); eventList.innerHTML=''; });
+  eventModal?.addEventListener('click', (ev)=>{ if(ev.target===eventModal){ eventModal.setAttribute('aria-hidden','true'); eventList.innerHTML=''; } });
+
+  // Search in topbar: searching classes and files
+  searchInput?.addEventListener('input', (e) => {
+    const q = (e.target.value || '').toLowerCase();
+    // Filter files table
+    renderTable(applyFilters());
+    // highlight classes matching search
+    document.querySelectorAll('.class-card').forEach(card => {
+      const subject = (card.dataset.subject || '').toLowerCase();
+      const title = (card.querySelector('.class-title')?.textContent || '').toLowerCase();
+      const match = q && (subject.includes(q) || title.includes(q));
+      card.style.boxShadow = match ? '0 8px 30px rgba(26,115,232,0.12)' : '';
+    });
+  });
+
+  // Load and render events
+  loadEvents();
+  renderCalendar();
+
+  // Finalize: expose small debug API
+  window._eduhub = {
+    filesRef: () => files,
+    eventsRef: () => events,
+    renderCalendar,
+    renderTable: () => renderTable(applyFilters())
+  };
 });
