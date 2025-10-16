@@ -1,13 +1,12 @@
-
 :root{
   --bg: #f4f6f8;
   --surface: #ffffff;
   --text: #1f2933;
   --muted: #6b7280;
 
-  /* Google-like blue used for control panel and primary accents */
-  --brand: #1a73e8;        /* primary blue for control panel & primary buttons */
-  --brand-strong: #1558b0; /* stronger blue for hover/headers */
+  /* Control panel blue (Google-like) */
+  --brand: #1a73e8;
+  --brand-strong: #1558b0;
   --accent: #f39c12;
   --danger: #e74c3c;
   --success: #27ae60;
@@ -160,7 +159,14 @@ tbody td { padding:0.7rem; border-top:1px solid rgba(0,0,0,0.04) }
 .modal-content { max-width:900px; width:100%; position:relative }
 
 /* Responsive */
-@media (max-width:1000px) { .classes-grid { grid-template-columns: repeat(2, 1fr) } .sidebar { width: 72px; min-width:72px; padding-inline:0.6rem } .control-nav a span { display:none } .profile-meta { display:none } .hero-left { max-width:100% } .top-search { display:none } }
+@media (max-width:1000px) {
+  .classes-grid { grid-template-columns: repeat(2, 1fr) }
+  .sidebar { width: 72px; min-width:72px; padding-inline:0.6rem }
+  .control-nav a span { display:none }
+  .profile-meta { display:none }
+  .hero-left { max-width:100% }
+  .top-search { display:none }
+}
 @media (max-width:700px) {
   .app { flex-direction:column }
   .sidebar { width:100%; min-width:100%; display:flex; flex-direction:row; align-items:center; gap:0.5rem; padding:0.5rem }
