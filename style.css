@@ -1,14 +1,14 @@
-/* Eduhub learning site stylesheet
-   - Design tokens, responsive layout, course cards, hero, badges, accessible focus, dark-mode
-   - Built on top of your original stylesheet; modernized and componentized
+/* EduHub — learning site styles
+   - Design tokens, responsive layout, accessible focus, course/project cards, upload UI, table
+   - Built to replace/upgrade the original style.css while keeping backwards compatibility
 */
 
-/* Tokens */
+/* Design tokens */
 :root{
   --bg: #f4f6f8;
   --surface: #ffffff;
-  --muted: #67707a;
   --text: #1f2933;
+  --muted: #6b7280;
   --brand: #2b86d6;
   --brand-strong: #1f6fb0;
   --accent: #f39c12;
@@ -18,7 +18,6 @@
   --radius-sm: 8px;
   --radius-md: 12px;
   --shadow-sm: 0 6px 18px rgba(18,24,30,0.06);
-  --shadow-md: 0 18px 40px rgba(18,24,30,0.06);
 
   --gap-sm: 0.75rem;
   --gap-md: 1.25rem;
@@ -28,18 +27,19 @@
 }
 
 /* Dark mode */
+:root[data-theme="dark"],
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #07111a;
     --surface: #0b1220;
-    --muted: #9aa6b2;
     --text: #e6eef6;
+    --muted: #9aa6b2;
     --brand: #4aa3ff;
     --brand-strong: #3b8ae6;
   }
 }
 
-/* Base */
+/* Reset & base */
 *{box-sizing:border-box}
 html{font-size:16px;scroll-behavior:smooth}
 body{
@@ -51,7 +51,7 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
-/* Container */
+/* Container & sections */
 .container { width:min(1100px,94%); margin-inline:auto; padding-block:1rem; }
 .section { background:var(--surface); padding:clamp(0.9rem,2vw,1.6rem); border-radius:var(--radius-md); box-shadow:var(--shadow-sm); margin-block:1.25rem; }
 
@@ -64,7 +64,7 @@ h3{font-size:1rem;margin:0}
 .nav{position:sticky;top:0;z-index:40;background:transparent;border-bottom:1px solid rgba(0,0,0,0.04)}
 .nav-inner{display:flex;align-items:center;gap:1rem;justify-content:space-between;padding:0.6rem 0}
 .brand{display:flex;align-items:center;gap:0.6rem;text-decoration:none;color:var(--text);font-weight:700}
-.logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand-strong));display:inline-grid;place-items:center;color:white;font-weight:800;box-shadow:var(--shadow-sm)}
+.logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand-strong));display:inline-grid;place-items:center;color:white;font-weight:800}
 .brand-name{display:inline-block}
 
 /* Nav menu */
@@ -76,11 +76,14 @@ h3{font-size:1rem;margin:0}
 /* Nav actions */
 .nav-actions{display:flex;gap:0.5rem;align-items:center}
 .search input[type="search"]{padding:0.45rem 0.6rem;border-radius:999px;border:1px solid rgba(0,0,0,0.06);width:220px}
+
+/* Buttons */
 .btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.5rem 0.8rem;border-radius:8px;border:0;cursor:pointer;font-weight:600;transition:transform var(--transition-short) ease,filter var(--transition-short) ease}
 .btn-primary{background:var(--brand);color:white;box-shadow:var(--shadow-sm)}
 .btn-ghost{background:transparent;border:1px solid rgba(0,0,0,0.06);color:var(--text)}
+.btn-strong{background:var(--brand-strong);color:white}
 
-/* Mobile nav (checkbox hack) */
+/* Mobile nav */
 .nav-toggle{display:none}
 .nav-toggle-label{display:none;gap:.5rem;align-items:center;border-radius:8px;padding:0.25rem}
 .hamburger{width:28px;height:2px;background:var(--muted);position:relative;display:block}
@@ -88,12 +91,12 @@ h3{font-size:1rem;margin:0}
 .hamburger::before{top:-8px}
 .hamburger::after{top:8px}
 
-/* Hero */
+/* Hero & cards */
 .hero{display:flex;gap:var(--gap-md);align-items:center}
-.hero img{max-width:100%;height:auto;border-radius:8px}
 .card{background:var(--surface);border-radius:var(--radius-md);padding:1rem;box-shadow:var(--shadow-sm)}
+.center{text-align:center}
 
-/* Grid helpers */
+/* Grids */
 .grid{display:grid;gap:var(--gap-md)}
 .columns-2{grid-template-columns:1fr 1fr}
 .columns-3{grid-template-columns:repeat(3,1fr)}
@@ -102,34 +105,43 @@ h3{font-size:1rem;margin:0}
 .badge{display:inline-block;background:linear-gradient(90deg,color-mix(in srgb,var(--surface) 92%,transparent),transparent);padding:0.25rem 0.5rem;border-radius:999px;font-size:0.85rem;border:1px solid rgba(0,0,0,0.04)}
 .badge.ghost{background:transparent;border:1px dashed rgba(0,0,0,0.06)}
 
-/* Course card */
-.course-card{display:flex;flex-direction:column;gap:0.5rem}
-.course-card img{object-fit:cover;height:160px}
-.course-card h3{margin-top:0}
-.course-card .small{color:var(--muted);font-size:0.9rem}
+/* Upload form & file input */
+.form{display:grid;gap:var(--gap-sm)}
+label{font-weight:600;color:var(--text)}
+.file-input{position:relative;display:inline-flex;gap:0.5rem;align-items:center}
+.file-input input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer}
+.file-input .file-label{padding:0.45rem 0.65rem;background:color-mix(in srgb,var(--surface) 96%,transparent);border-radius:var(--radius-sm);border:1px dashed rgba(0,0,0,0.06)}
 
-/* Table wrapper & responsive */
+/* Table & dashboard */
 .table-wrapper{overflow:auto;border-radius:8px}
-@media (max-width:900px){ .columns-3{grid-template-columns:1fr} .search input[type="search"]{display:none} }
+table{width:100%;border-collapse:collapse;font-size:0.95rem}
+thead th{padding:0.85rem;text-align:left;background:color-mix(in srgb,var(--surface) 92%,transparent);font-weight:700}
+tbody td{padding:0.7rem;border-top:1px solid rgba(0,0,0,0.04)}
 
-/* Progress bar */
-.progress{height:10px;background:rgba(0,0,0,0.06);border-radius:999px;overflow:hidden}
-.progress > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--brand-strong));transition:width var(--transition-medium) ease}
+/* Modal preview */
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.35);padding:1rem;z-index:60}
+.modal[aria-hidden="false"]{display:flex}
+.modal-content{max-width:900px;width:100%;position:relative}
+#preview-body img, #preview-body iframe{max-width:100%;height:auto;border-radius:6px;}
 
-/* Small utilities */
+/* Utilities */
 .small{font-size:0.9rem;color:var(--muted)}
 .u-mt-md{margin-top:1rem}
 .u-mb-md{margin-bottom:1rem}
-.center{text-align:center}
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 
-/* Focus & accessibility */
+/* Focus */
 a:focus-visible, button:focus-visible, input:focus-visible { outline:3px solid color-mix(in srgb,var(--brand) 30%, transparent); outline-offset:3px }
 
-/* Preserve old button behavior to avoid regressions */
-button{background:var(--danger);color:white;border:none;padding:0.4rem 0.6rem;border-radius:6px;cursor:pointer}
-button:hover{filter:brightness(0.96);transform:translateY(-1px)}
+/* Legacy fallback to preserve basic original selectors */
+nav ul{list-style:none;display:flex;justify-content:center;flex-wrap:wrap;gap:1.25rem;margin:0;padding:0}
+nav li{display:inline}
+nav a{color:var(--text);font-weight:bold;text-decoration:none;font-size:1.05rem;padding:0.5rem 0;position:relative}
+nav a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:2px;background:var(--accent);transition:width 0.25s ease}
+nav a:hover::after{width:100%}
 
 /* Responsive */
+@media (max-width:900px){ .columns-3{grid-template-columns:1fr} .search input[type="search"]{display:none} }
 @media (max-width:700px){
   .nav-toggle-label{display:inline-flex}
   .nav-toggle{display:block;position:absolute;left:-9999px}
@@ -138,8 +150,6 @@ button:hover{filter:brightness(0.96);transform:translateY(-1px)}
   .hero{flex-direction:column}
   .columns-2{grid-template-columns:1fr}
 }
-
-/* Small screens */
 @media (max-width:420px){
   .logo{width:30px;height:30px}
   .search input[type="search"]{width:140px}
