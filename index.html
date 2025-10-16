@@ -3,16 +3,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Eduhub — Learn Anything</title>
-  <link rel="stylesheet" href="style.css">
-  <meta name="description" content="Eduhub — curated courses, hands-on projects, and community learning.">
+  <title>EduHub — Learn & Build</title>
+  <meta name="description" content="EduHub — hands-on projects and learning resources in electronics, automation and science." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
   <nav class="nav" aria-label="Main navigation">
     <div class="nav-inner container">
-      <a href="#" class="brand" aria-label="Eduhub home">
+      <a class="brand" href="#" aria-label="EduHub home">
         <span class="logo" aria-hidden="true">E</span>
-        <span class="brand-name">Eduhub</span>
+        <span class="brand-name">EduHub</span>
       </a>
 
       <input id="nav-toggle" class="nav-toggle" type="checkbox" aria-hidden="true" />
@@ -21,18 +22,18 @@
       </label>
 
       <div class="nav-menu" role="menubar" aria-label="Primary">
-        <a href="#" role="menuitem">Home</a>
-        <a href="#courses" role="menuitem">Courses</a>
-        <a href="#projects" role="menuitem">Projects</a>
         <a href="#about" role="menuitem">About</a>
+        <a href="#projects" role="menuitem">Projects</a>
+        <a href="#learning" role="menuitem">Learning</a>
+        <a href="#contact" role="menuitem">Contact</a>
       </div>
 
       <div class="nav-actions">
-        <div class="search">
-          <input id="site-search" type="search" placeholder="Search courses, topics..." aria-label="Search courses" />
+        <div class="search" role="search">
+          <input id="site-search" type="search" placeholder="Search courses & materials..." aria-label="Search courses and materials">
         </div>
         <button id="theme-toggle" class="btn btn-ghost" aria-pressed="false" title="Toggle theme">🌙</button>
-        <a href="#" class="btn btn-primary">Sign in</a>
+        <a class="btn btn-primary" href="#">Sign in</a>
       </div>
     </div>
   </nav>
@@ -41,149 +42,140 @@
     <header class="section hero container">
       <div class="grid columns-2" style="align-items:center;">
         <div>
-          <h1>Learn the skills that matter</h1>
-          <p class="small u-mb-md">Hands-on courses, clear learning paths, and real projects to build your portfolio. Start from zero and level up.</p>
-          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-            <a href="#courses" class="btn btn-primary">Browse courses</a>
-            <a href="#projects" class="btn btn-ghost">Explore projects</a>
+          <h1>Learn by building — electronics, automation & science</h1>
+          <p class="small u-mb-md">Practical projects, downloadable resources, and clear learning paths. Browse courses, upload your own materials, and follow along.</p>
+          <div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
+            <a href="#learning" class="btn btn-primary">Upload Material</a>
+            <a href="#projects" class="btn btn-ghost">Explore Projects</a>
           </div>
         </div>
         <div class="card center" aria-hidden="true">
-          <img src="https://via.placeholder.com/560x320?text=Learning+at+Eduhub" alt="" style="width:100%;border-radius:8px;">
+          <img src="https://via.placeholder.com/720x420?text=Hands-on+Learning" alt="" style="width:100%;border-radius:8px;">
         </div>
       </div>
     </header>
 
-    <section id="features" class="section container card fade-in">
-      <div class="grid columns-3">
-        <div class="kv">
-          <div class="logo" style="width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand-strong));display:inline-grid;place-items:center;color:white;margin-right:0.6rem">P</div>
-          <div>
-            <strong>Project-driven</strong>
-            <div class="small">Build real projects as you learn.</div>
-          </div>
-        </div>
-        <div class="kv">
-          <div class="logo" style="width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#ff7b2d);display:inline-grid;place-items:center;color:white;margin-right:0.6rem">M</div>
-          <div>
-            <strong>Mentored paths</strong>
-            <div class="small">Curated paths and community help.</div>
-          </div>
-        </div>
-        <div class="kv">
-          <div class="logo" style="width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--success),#2fb86f);display:inline-grid;place-items:center;color:white;margin-right:0.6rem">C</div>
-          <div>
-            <strong>Certifications</strong>
-            <div class="small">Earn badges and shareable certificates.</div>
-          </div>
-        </div>
+    <section id="about" class="section container card">
+      <h2>Welcome to EduHub</h2>
+      <p>EduHub is a space where I share hands-on tech projects and learning resources in electronics, automation, and science. Materials are downloadable and community friendly.</p>
+    </section>
+
+    <section id="projects" class="section container card">
+      <h2>Featured Projects</h2>
+      <div class="grid columns-3 u-mt-md" id="projects-grid">
+        <article class="card">
+          <img src="https://via.placeholder.com/400x220?text=Smart+Sensor" alt="Smart Sensor" style="width:100%;border-radius:8px;">
+          <h3>Smart Sensor</h3>
+          <p class="small">A small, power-efficient sensor network for home automation.</p>
+        </article>
+        <article class="card">
+          <img src="https://via.placeholder.com/400x220?text=Robotics" alt="Robotics" style="width:100%;border-radius:8px;">
+          <h3>Robotics Starter Kit</h3>
+          <p class="small">Beginner-friendly robot using microcontrollers and simple sensors.</p>
+        </article>
+        <article class="card">
+          <img src="https://via.placeholder.com/400x220?text=Automation" alt="Automation" style="width:100%;border-radius:8px;">
+          <h3>Home Automation</h3>
+          <p class="small">Integrate controllers, relays, and safety checks for smart homes.</p>
+        </article>
       </div>
     </section>
 
-    <section id="courses" class="section container">
-      <h2>Popular courses</h2>
+    <section id="learning" class="section container card">
+      <h2>Upload Learning Material</h2>
 
-      <div class="u-mt-md" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center;justify-content:space-between;">
-        <div style="display:flex;gap:0.5rem;align-items:center;">
-          <label for="level" class="small">Level</label>
-          <select id="level" aria-label="Filter by level">
-            <option value="">All</option>
-            <option>Beginner</option>
-            <option>Intermediate</option>
-            <option>Advanced</option>
+      <form id="uploadForm" class="form" enctype="multipart/form-data" method="POST" action="/upload" aria-describedby="uploadStatus">
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+          <label for="subject" class="small sr-only">Subject</label>
+          <select name="subject" id="subject" required>
+            <option value="">Select subject</option>
+            <option value="Chemistry">Chemistry</option>
+            <option value="Physics">Physics</option>
+            <option value="Math">Math</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Automation">Automation</option>
+          </select>
+
+          <label class="file-input" aria-hidden="false">
+            <span class="file-label">Choose file…</span>
+            <input id="uploadFile" type="file" name="uploadFile" required />
+          </label>
+
+          <input type="text" id="uploader" name="uploader" placeholder="Your name" value="Danish" required style="min-width:160px;">
+          <button type="submit" class="btn btn-primary">Upload</button>
+        </div>
+        <div id="uploadStatus" class="upload-status small u-mt-md" aria-live="polite"></div>
+      </form>
+    </section>
+
+    <section id="dashboard" class="section container card">
+      <h2>Uploaded Materials</h2>
+
+      <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;margin-top:0.5rem;">
+        <div>
+          <label for="subjectFilter" class="small">Subject</label>
+          <select id="subjectFilter" aria-label="Filter by subject">
+            <option value="all">All</option>
+            <option value="Chemistry">Chemistry</option>
+            <option value="Physics">Physics</option>
+            <option value="Math">Math</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Automation">Automation</option>
           </select>
         </div>
 
-        <div style="display:flex;gap:0.5rem;align-items:center;">
-          <label class="small sr-only" for="sort">Sort</label>
-          <select id="sort" aria-label="Sort courses">
-            <option value="popular">Most popular</option>
+        <div>
+          <label for="typeFilter" class="small">File type</label>
+          <select id="typeFilter" aria-label="Filter by file type">
+            <option value="all">All</option>
+            <option value="pdf">PDF</option>
+            <option value="docx">Word</option>
+            <option value="zip">ZIP</option>
+          </select>
+        </div>
+
+        <div style="margin-left:auto;">
+          <label for="sort" class="small sr-only">Sort</label>
+          <select id="sort" aria-label="Sort files">
             <option value="new">Newest</option>
-            <option value="duration">Shortest</option>
+            <option value="old">Oldest</option>
           </select>
         </div>
       </div>
 
       <div class="table-wrapper u-mt-md">
-        <div class="grid columns-3" id="course-grid" style="gap:1rem;">
-          <!-- Course card example (duplicate for each course) -->
-          <article class="card course-card" data-title="Intro to JavaScript" data-level="Beginner">
-            <img src="https://via.placeholder.com/400x220?text=JavaScript" alt="Intro to JavaScript" style="width:100%;border-radius:8px 8px 6px 6px;">
-            <div style="padding-top:0.6rem;">
-              <h3 style="margin:0 0 0.25rem 0;font-size:1.05rem;">Intro to JavaScript</h3>
-              <div class="small">Instructor: <strong>Jane Doe</strong> • 6 hrs • Beginner</div>
-              <p class="small u-mt-md">Learn JS fundamentals, DOM manipulation, and simple apps. Hands-on projects included.</p>
-
-              <div style="display:flex;gap:0.5rem;align-items:center;margin-top:0.8rem;justify-content:space-between;">
-                <div style="display:flex;gap:0.5rem;align-items:center;">
-                  <span class="badge">Beginner</span>
-                  <span class="badge ghost">JavaScript</span>
-                </div>
-                <div class="row-actions">
-                  <button class="btn btn-primary enroll-btn" data-title="Intro to JavaScript">Enroll</button>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <article class="card course-card" data-title="Python for Data" data-level="Intermediate">
-            <img src="https://via.placeholder.com/400x220?text=Python+Data" alt="Python for Data" style="width:100%;border-radius:8px 8px 6px 6px;">
-            <div style="padding-top:0.6rem;">
-              <h3 style="margin:0 0 0.25rem 0;font-size:1.05rem;">Python for Data</h3>
-              <div class="small">Instructor: <strong>John Smith</strong> • 12 hrs • Intermediate</div>
-              <p class="small u-mt-md">Data analysis, pandas, visualization, and a capstone data project.</p>
-
-              <div style="display:flex;gap:0.5rem;align-items:center;margin-top:0.8rem;justify-content:space-between;">
-                <div style="display:flex;gap:0.5rem;align-items:center;">
-                  <span class="badge">Intermediate</span>
-                  <span class="badge ghost">Python</span>
-                </div>
-                <div class="row-actions">
-                  <button class="btn btn-primary enroll-btn" data-title="Python for Data">Enroll</button>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <article class="card course-card" data-title="React & Frontend" data-level="Advanced">
-            <img src="https://via.placeholder.com/400x220?text=React" alt="React & Frontend" style="width:100%;border-radius:8px 8px 6px 6px;">
-            <div style="padding-top:0.6rem;">
-              <h3 style="margin:0 0 0.25rem 0;font-size:1.05rem;">React & Frontend</h3>
-              <div class="small">Instructor: <strong>Alex Lee</strong> • 20 hrs • Advanced</div>
-              <p class="small u-mt-md">Build modern single-page apps, hooks, performance, and testing.</p>
-
-              <div style="display:flex;gap:0.5rem;align-items:center;margin-top:0.8rem;justify-content:space-between;">
-                <div style="display:flex;gap:0.5rem;align-items:center;">
-                  <span class="badge">Advanced</span>
-                  <span class="badge ghost">React</span>
-                </div>
-                <div class="row-actions">
-                  <button class="btn btn-primary enroll-btn" data-title="React & Frontend">Enroll</button>
-                </div>
-              </div>
-            </div>
-          </article>
-
-        </div>
+        <table id="fileTable" aria-live="polite">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Filename</th>
+              <th>Subject</th>
+              <th>Uploader</th>
+              <th>Uploaded</th>
+              <th>Preview</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- JS will render uploaded rows here -->
+          </tbody>
+        </table>
       </div>
     </section>
 
-    <section id="projects" class="section container card">
-      <h2>Hands-on projects</h2>
-      <p class="small">Complete projects after lessons to apply your learning. View mentor feedback and community submissions.</p>
-
-      <div class="u-mt-md">
-        <div class="progress" aria-hidden="true" style="max-width:480px;">
-          <i id="demo-progress" style="width:20%"></i>
-        </div>
-        <div class="small u-mt-md">Progress simulation — enroll in a course to start building progress</div>
-      </div>
+    <section id="contact" class="section container card center">
+      <h2>Contact</h2>
+      <p class="small">Reach out to collaborate or ask about projects — <a href="mailto:hello@eduhub.example">hello@eduhub.example</a></p>
+      <p class="small">© <strong>EduHub</strong></p>
     </section>
-
-    <footer class="section container center small" id="about">
-      <div>© <strong>Eduhub</strong> • Built for learners • <a href="#">Privacy</a> • <a href="#">Terms</a></div>
-    </footer>
   </main>
+
+  <div id="preview-modal" class="modal" aria-hidden="true">
+    <div class="modal-content card">
+      <button id="preview-close" class="btn btn-ghost" aria-label="Close preview">✕</button>
+      <div id="preview-body"></div>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
