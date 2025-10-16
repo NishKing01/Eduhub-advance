@@ -1,20 +1,18 @@
-/* EduHub — learning site styles
-   - Design tokens, responsive layout, accessible focus, course/project cards, upload UI, table
-   - Includes simple touch feedback for buttons (color/brightness change) and subject cards updated to main subjects
-*/
 
-/* Design tokens */
 :root{
   --bg: #f4f6f8;
   --surface: #ffffff;
   --text: #1f2933;
   --muted: #6b7280;
-  --brand: #2b86d6;
-  --brand-strong: #1f6fb0;
+
+  /* Google-like blue used for control panel and primary accents */
+  --brand: #1a73e8;        /* primary blue for control panel & primary buttons */
+  --brand-strong: #1558b0; /* stronger blue for hover/headers */
   --accent: #f39c12;
   --danger: #e74c3c;
   --success: #27ae60;
 
+  --sidebar-width: 220px;
   --radius-sm: 8px;
   --radius-md: 12px;
   --shadow-sm: 0 6px 18px rgba(18,24,30,0.06);
@@ -22,11 +20,11 @@
   --gap-sm: 0.75rem;
   --gap-md: 1.25rem;
 
-  --transition-short: 180ms;
-  --transition-medium: 320ms;
+  --transition-short: 160ms;
+  --transition-medium: 300ms;
 }
 
-/* Dark mode */
+/* Dark mode override */
 :root[data-theme="dark"],
 @media (prefers-color-scheme: dark) {
   :root {
@@ -51,130 +49,123 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
-/* Container & sections */
-.container { width:min(1100px,94%); margin-inline:auto; padding-block:1rem; }
-.section { background:var(--surface); padding:clamp(0.9rem,2vw,1.6rem); border-radius:var(--radius-md); box-shadow:var(--shadow-sm); margin-block:1.25rem; }
+/* App layout */
+.app { display:flex; min-height:100vh; }
 
-/* Headings */
-h1{font-size:clamp(1.25rem,2.4vw,2rem);margin:0 0 0.5rem}
-h2{font-size:clamp(1rem,1.6vw,1.25rem);margin:0 0 0.75rem}
-h3{font-size:1rem;margin:0}
-
-/* Nav */
-.nav{position:sticky;top:0;z-index:40;background:transparent;border-bottom:1px solid rgba(0,0,0,0.04)}
-.nav-inner{display:flex;align-items:center;gap:1rem;justify-content:space-between;padding:0.6rem 0}
-.brand{display:flex;align-items:center;gap:0.6rem;text-decoration:none;color:var(--text);font-weight:700}
-.logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand-strong));display:inline-grid;place-items:center;color:white;font-weight:800}
-.brand-name{display:inline-block}
-
-/* Nav menu */
-.nav-menu{display:flex;gap:1rem;align-items:center}
-.nav-menu a{color:var(--text);text-decoration:none;font-weight:600;padding:0.4rem;border-radius:8px;position:relative}
-.nav-menu a::after{content:"";position:absolute;left:0;bottom:-6px;width:0;height:2px;background:var(--accent);transition:width var(--transition-short) ease}
-.nav-menu a:hover::after,.nav-menu a:focus::after{width:100%}
-
-/* Nav actions */
-.nav-actions{display:flex;gap:0.5rem;align-items:center}
-.search input[type="search"]{padding:0.45rem 0.6rem;border-radius:999px;border:1px solid rgba(0,0,0,0.06);width:220px}
-
-/* Buttons */
-.btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.5rem 0.8rem;border-radius:8px;border:0;cursor:pointer;font-weight:600;transition:transform var(--transition-short) ease,filter var(--transition-short) ease,background-color var(--transition-short) ease}
-.btn-primary{background:var(--brand);color:white;box-shadow:var(--shadow-sm)}
-.btn-ghost{background:transparent;border:1px solid rgba(0,0,0,0.06);color:var(--text)}
-.btn-danger{background:var(--danger);color:white}
-.btn-strong{background:var(--brand-strong);color:white}
-
-/* --- Simple touch/press feedback ---
-   We apply a subtle color/brightness change when a button is pressed or touched.
-   CSS :active covers mouse clicks and some touch interactions; JS adds/removes .pressed
-   on pointerdown/pointerup to ensure reliable behavior on touch devices.
-*/
-.btn:active,
-.btn.pressed {
-  /* slightly darker / different visual for pressed state */
-  filter: brightness(0.88);
-  transform: translateY(1px);
-  box-shadow: none;
+/* Sidebar / control panel */
+.sidebar {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  background: linear-gradient(180deg, var(--brand), var(--brand-strong));
+  color: white;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:1rem;
+  gap:1rem;
+  box-shadow: 0 8px 30px rgba(17,30,60,0.12);
 }
+.sidebar .brand { display:flex;align-items:center;gap:0.6rem;text-decoration:none;color:white;font-weight:700 }
+.logo { width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,0.12);display:grid;place-items:center;font-weight:800 }
+.sidebar-top { display:flex;align-items:center;gap:0.5rem;justify-content:space-between }
+.sidebar-toggle { color:white; background:transparent; border:1px solid rgba(255,255,255,0.08); padding:0.35rem 0.5rem; border-radius:8px; }
 
-/* For ghost buttons, add subtle tinted background on press for clarity */
-.btn-ghost:active,
-.btn-ghost.pressed {
-  background-color: color-mix(in srgb, var(--surface) 90%, var(--brand) 10%);
+.control-nav ul { list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.25rem }
+.control-nav a {
+  display:flex;align-items:center;gap:0.75rem;padding:0.6rem;border-radius:8px;color:white;text-decoration:none;font-weight:600;
+  transition:background-color var(--transition-short);
 }
+.control-nav a i { width:20px;text-align:center;opacity:0.95 }
+.control-nav a:hover, .control-nav a:focus, .control-nav a.active { background: rgba(255,255,255,0.08); box-shadow: inset 0 -1px 0 rgba(255,255,255,0.02); }
 
-/* Mobile-friendly tap highlight removal (optional) */
-button, a { -webkit-tap-highlight-color: rgba(0,0,0,0); }
+.sidebar-bottom { border-top: 1px dashed rgba(255,255,255,0.06); padding-top:0.75rem; }
+.profile { display:flex;gap:0.6rem;align-items:center }
+.avatar { width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.18);display:grid;place-items:center;font-weight:700 }
+.profile-meta .profile-name { font-weight:700 }
+.profile-link { color: rgba(255,255,255,0.9); text-decoration:underline; font-size:0.85rem }
 
-/* Mobile nav */
-.nav-toggle{display:none}
-.nav-toggle-label{display:none;gap:.5rem;align-items:center;border-radius:8px;padding:0.25rem}
-.hamburger{width:28px;height:2px;background:var(--muted);position:relative;display:block}
-.hamburger::before,.hamburger::after{content:"";position:absolute;left:0;width:100%;height:2px;background:var(--muted)}
-.hamburger::before{top:-8px}
-.hamburger::after{top:8px}
+/* Main area */
+.main { flex:1; display:flex;flex-direction:column; min-height:100vh; background:transparent; }
+.topbar { display:flex;justify-content:space-between;align-items:center;padding:0.85rem 1.25rem;border-bottom:1px solid rgba(0,0,0,0.04); background:linear-gradient(180deg,color-mix(in srgb,var(--surface) 96%,transparent),transparent) }
+.app-title { margin:0;font-size:1rem;font-weight:700 }
+.top-subtitle { color:var(--muted) }
 
-/* Hero & cards */
-.hero{display:flex;gap:var(--gap-md);align-items:center}
-.card{background:var(--surface);border-radius:var(--radius-md);padding:1rem;box-shadow:var(--shadow-sm)}
-.center{text-align:center}
+.topbar-actions { display:flex;align-items:center;gap:0.6rem }
+.top-search { padding:0.42rem 0.6rem;border-radius:999px;border:1px solid rgba(0,0,0,0.06);width:260px }
 
-/* Grids */
-.grid{display:grid;gap:var(--gap-md)}
-.columns-2{grid-template-columns:1fr 1fr}
-.columns-3{grid-template-columns:repeat(3,1fr)}
+/* Content area */
+.content { padding:1rem; }
 
-/* Badges */
-.badge{display:inline-block;background:linear-gradient(90deg,color-mix(in srgb,var(--surface) 92%,transparent),transparent);padding:0.25rem 0.5rem;border-radius:999px;font-size:0.85rem;border:1px solid rgba(0,0,0,0.04)}
-.badge.ghost{background:transparent;border:1px dashed rgba(0,0,0,0.06)}
+/* Card, section, hero */
+.section { background:var(--surface); padding:1rem; border-radius:var(--radius-md); box-shadow:var(--shadow-sm); margin-bottom:1rem; }
+.card { padding:1rem; }
 
-/* Upload form & file input */
-.form{display:grid;gap:var(--gap-sm)}
-label{font-weight:600;color:var(--text)}
-.file-input{position:relative;display:inline-flex;gap:0.5rem;align-items:center}
-.file-input input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer}
-.file-input .file-label{padding:0.45rem 0.65rem;background:color-mix(in srgb,var(--surface) 96%,transparent);border-radius:var(--radius-sm);border:1px dashed rgba(0,0,0,0.06)}
+/* Hero grid */
+.hero-grid { display:flex;gap:1.25rem;align-items:center;justify-content:space-between }
+.hero-left { max-width:60% }
+.hero-right { min-width:220px }
+.stats-grid { display:flex;gap:0.75rem }
+.stat { background:linear-gradient(180deg, color-mix(in srgb,var(--surface) 96%,transparent), transparent); padding:0.6rem;border-radius:8px;text-align:center;min-width:80px }
+.stat-num { font-weight:700;font-size:1.15rem }
 
-/* Table & dashboard */
-.table-wrapper{overflow:auto;border-radius:8px}
-table{width:100%;border-collapse:collapse;font-size:0.95rem}
-thead th{padding:0.85rem;text-align:left;background:color-mix(in srgb,var(--surface) 92%,transparent);font-weight:700}
-tbody td{padding:0.7rem;border-top:1px solid rgba(0,0,0,0.04)}
+/* Classes grid (classroom style) */
+.classes-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:1rem }
+.class-card { border:1px solid rgba(0,0,0,0.04); border-radius:10px; overflow:hidden; display:flex;flex-direction:column; justify-content:space-between }
+.class-card-top { padding:1rem; color:white }
+.class-card .class-card-body { padding:0.8rem; background: color-mix(in srgb, var(--surface) 96%, transparent) }
+.class-title { font-weight:700; font-size:1.05rem }
+.class-sub { font-size:0.9rem; opacity:0.95 }
 
-/* Modal preview */
-.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.35);padding:1rem;z-index:60}
-.modal[aria-hidden="false"]{display:flex}
-.modal-content{max-width:900px;width:100%;position:relative}
-#preview-body img, #preview-body iframe{max-width:100%;height:auto;border-radius:6px;}
+/* Per-subject color banners inside card-top */
+.class-card-top.chemistry { background: linear-gradient(135deg, #3a8e44, #2b7e36); }
+.class-card-top.math { background: linear-gradient(135deg, #6b4dd6, #4d36b0); }
+.class-card-top.physics { background: linear-gradient(135deg, #e77a00, #c65b00); }
 
-/* Utilities */
-.small{font-size:0.9rem;color:var(--muted)}
-.u-mt-md{margin-top:1rem}
-.u-mb-md{margin-bottom:1rem}
-.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+/* Class actions row */
+.class-actions { display:flex;gap:0.5rem;margin-top:0.6rem }
 
-/* Focus */
-a:focus-visible, button:focus-visible, input:focus-visible { outline:3px solid color-mix(in srgb,var(--brand) 30%, transparent); outline-offset:3px }
+/* Upload row styles */
+.upload-row { display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap }
+select, input[type="text"], input[type="search"] { padding:0.5rem 0.6rem;border-radius:8px;border:1px solid rgba(0,0,0,0.06) }
+.file-input { position:relative; display:inline-flex; align-items:center }
+.file-input input[type="file"] { position:absolute; inset:0; opacity:0; cursor:pointer }
+.file-label { padding:0.45rem 0.65rem; border-radius:8px; border:1px dashed rgba(0,0,0,0.06); background: color-mix(in srgb, var(--surface) 96%, transparent) }
 
-/* Legacy fallback to preserve basic original selectors */
-nav ul{list-style:none;display:flex;justify-content:center;flex-wrap:wrap;gap:1.25rem;margin:0;padding:0}
-nav li{display:inline}
-nav a{color:var(--text);font-weight:bold;text-decoration:none;font-size:1.05rem;padding:0.5rem 0;position:relative}
-nav a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:2px;background:var(--accent);transition:width 0.25s ease}
-nav a:hover::after{width:100%}
+/* Table */
+.table-wrapper { overflow:auto;border-radius:8px }
+table { width:100%; border-collapse:collapse; font-size:0.95rem }
+thead th { padding:0.85rem; text-align:left; background: color-mix(in srgb, var(--surface) 92%, transparent); font-weight:700 }
+tbody td { padding:0.7rem; border-top:1px solid rgba(0,0,0,0.04) }
+
+/* Buttons & pressed state (simple color change) */
+.btn { display:inline-flex; align-items:center; gap:0.5rem; padding:0.48rem 0.7rem; border-radius:8px; border:0; cursor:pointer; font-weight:600; transition: transform var(--transition-short), filter var(--transition-short), background-color var(--transition-short) }
+.btn-primary { background: var(--brand); color: white; box-shadow: 0 6px 20px rgba(26,115,232,0.12) }
+.btn-ghost { background: transparent; border: 1px solid rgba(0,0,0,0.06); color: var(--text) }
+.btn-danger { background: var(--danger); color: white }
+.btn-strong { background: var(--brand-strong); color: white }
+
+/* Pressed visual: slightly darker via filter + tiny translate */
+.btn:active, .btn.pressed { filter: brightness(0.88); transform: translateY(1px); box-shadow: none; }
+
+/* Small utilities */
+.small { font-size:0.9rem; color:var(--muted) }
+.u-mt-md { margin-top:1rem }
+.u-mb-md { margin-bottom:1rem }
+.center { text-align:center }
+.sr-only { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important }
+
+/* Modal */
+.modal { position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.36); padding:1rem; z-index:60 }
+.modal[aria-hidden="false"] { display:flex }
+.modal-content { max-width:900px; width:100%; position:relative }
 
 /* Responsive */
-@media (max-width:900px){ .columns-3{grid-template-columns:1fr} .search input[type="search"]{display:none} }
-@media (max-width:700px){
-  .nav-toggle-label{display:inline-flex}
-  .nav-toggle{display:block;position:absolute;left:-9999px}
-  .nav-menu{display:none;flex-direction:column;width:100%;padding-block:0.5rem}
-  #nav-toggle:checked ~ .nav-inner .nav-menu{display:flex}
-  .hero{flex-direction:column}
-  .columns-2{grid-template-columns:1fr}
-}
-@media (max-width:420px){
-  .logo{width:30px;height:30px}
-  .search input[type="search"]{width:140px}
-  .btn{padding:0.45rem 0.6rem;font-size:0.95rem}
+@media (max-width:1000px) { .classes-grid { grid-template-columns: repeat(2, 1fr) } .sidebar { width: 72px; min-width:72px; padding-inline:0.6rem } .control-nav a span { display:none } .profile-meta { display:none } .hero-left { max-width:100% } .top-search { display:none } }
+@media (max-width:700px) {
+  .app { flex-direction:column }
+  .sidebar { width:100%; min-width:100%; display:flex; flex-direction:row; align-items:center; gap:0.5rem; padding:0.5rem }
+  .main { flex:1 }
+  .classes-grid { grid-template-columns:1fr }
+  .topbar { padding:0.6rem }
+  .sidebar-toggle { display:block }
 }
