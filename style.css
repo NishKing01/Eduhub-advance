@@ -1,3 +1,11 @@
+/* EduHub — classroom style update (calendar + remove stream)
+   - Left blue control panel, classroom layout
+   - Calendar styles added
+   - Removed stream visual elements (the button and stream modal were removed in HTML)
+   - Buttons have simple color change on press
+*/
+
+/* Design tokens */
 :root{
   --bg: #f4f6f8;
   --surface: #ffffff;
@@ -146,17 +154,39 @@ tbody td { padding:0.7rem; border-top:1px solid rgba(0,0,0,0.04) }
 /* Pressed visual: slightly darker via filter + tiny translate */
 .btn:active, .btn.pressed { filter: brightness(0.88); transform: translateY(1px); box-shadow: none; }
 
+/* Calendar styles */
+.calendar-grid {
+  display:grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap:8px;
+  margin-top:12px;
+}
+.calendar-day {
+  min-height:84px;
+  border-radius:8px;
+  padding:8px;
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
+  border: 1px solid rgba(0,0,0,0.04);
+  position:relative;
+  display:flex;
+  flex-direction:column;
+}
+.calendar-day.outside { opacity:0.35 }
+.calendar-day .day-num { font-weight:700; font-size:0.95rem; margin-bottom:6px }
+.event-pill { display:inline-block; background: linear-gradient(90deg, var(--brand), var(--brand-strong)); color:white; padding:0.15rem 0.4rem; border-radius:999px; font-size:0.8rem; margin-top:4px; }
+.event-count { position:absolute; right:8px; top:8px; background:var(--accent); color:white; font-size:0.75rem; padding:2px 6px; border-radius:999px; }
+
+/* Modal */
+.modal { position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.36); padding:1rem; z-index:60 }
+.modal[aria-hidden="false"] { display:flex }
+.modal-content { max-width:900px; width:100%; position:relative }
+
 /* Small utilities */
 .small { font-size:0.9rem; color:var(--muted) }
 .u-mt-md { margin-top:1rem }
 .u-mb-md { margin-bottom:1rem }
 .center { text-align:center }
 .sr-only { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important }
-
-/* Modal */
-.modal { position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.36); padding:1rem; z-index:60 }
-.modal[aria-hidden="false"] { display:flex }
-.modal-content { max-width:900px; width:100%; position:relative }
 
 /* Responsive */
 @media (max-width:1000px) {
@@ -166,6 +196,8 @@ tbody td { padding:0.7rem; border-top:1px solid rgba(0,0,0,0.04) }
   .profile-meta { display:none }
   .hero-left { max-width:100% }
   .top-search { display:none }
+  .calendar-grid { gap:6px }
+  .calendar-day { min-height:72px; padding:6px }
 }
 @media (max-width:700px) {
   .app { flex-direction:column }
@@ -174,4 +206,5 @@ tbody td { padding:0.7rem; border-top:1px solid rgba(0,0,0,0.04) }
   .classes-grid { grid-template-columns:1fr }
   .topbar { padding:0.6rem }
   .sidebar-toggle { display:block }
+  .calendar-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); }
 }
