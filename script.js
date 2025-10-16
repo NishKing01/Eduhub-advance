@@ -1,8 +1,9 @@
-// EduHub small site script
+// EduHub small site script (updated)
 // - Theme toggle (persisted)
 // - Mobile menu (checkbox handled by CSS)
 // - Upload simulation + client-side rendering of uploaded table
 // - Filters, preview modal, delete
+// - Added pointer/touch handlers to give a consistent "pressed" color change on buttons
 
 document.addEventListener('DOMContentLoaded', () => {
   const root = document.documentElement;
@@ -44,6 +45,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Attach pointer/touch handlers to provide consistent pressed visual feedback on buttons
+  (function attachPressedHandlers() {
+    const pressable = document.querySelectorAll('.btn');
+    pressable.forEach(el => {
+      // pointer events - most robust across mouse/touch/stylus
+      el.addEventListener('pointerdown', onPressStart, {passive: true});
+      el.addEventListener('pointerup', onPressEnd);
+      el.addEventListener('pointercancel', onPressEnd);
+      el.addEventListener('pointerleave', onPressEnd);
+
+      // for older devices, also fallback to touch events (no-op if pointer events work)
+      el.addEventListener('touchstart', onPressStart, {passive: true});
+      el.addEventListener('touchend', onPressEnd);
+      el.addEventListener('touchcancel', onPressEnd);
+    });
+
+    function onPressStart(e) {
+      // add class to reflect pressed state; CSS handles visual change
+      e.currentTarget.classList.add('pressed');
+    }
+    function onPressEnd(e) {
+      e.currentTarget.classList.remove('pressed');
+    }
+  })();
+
   // In-memory "uploaded files" store (replace with real backend)
   const files = [];
 
@@ -55,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (type.includes('pdf') || name.toLowerCase().endsWith('.pdf')) return '<i class="fa-regular fa-file-pdf" aria-hidden="true"></i>';
     if (type.includes('zip') || name.toLowerCase().endsWith('.zip')) return '<i class="fa-regular fa-file-zipper" aria-hidden="true"></i>';
     if (type.includes('off') || name.toLowerCase().endsWith('.docx') || name.toLowerCase().endsWith('.doc')) return '<i class="fa-regular fa-file-word" aria-hidden="true"></i>';
+    if (type.startsWith('image') || /\.(png|jpe?g|gif|svg)$/i.test(name)) return '<i class="fa-regular fa-file-image" aria-hidden="true"></i>';
     return '<i class="fa-regular fa-file" aria-hidden="true"></i>';
   }
 
@@ -113,11 +140,23 @@ document.addEventListener('DOMContentLoaded', () => {
       files.unshift(entry);
       uploadStatus.textContent = `Uploaded ${file.name}`;
       renderTable(applyFilters());
-      // clear file input
+      // clear file input and file label
       fileInput.value = '';
+      const fileLabel = document.getElementById('file-label-text');
+      if (fileLabel) fileLabel.textContent = 'Choose file…';
       setTimeout(() => uploadStatus.textContent = '', 3000);
     }, 700 + Math.random() * 800);
   });
+
+  // Update chosen filename in the UI
+  const realFileInput = document.getElementById('uploadFile');
+  const fileLabelText = document.getElementById('file-label-text');
+  if (realFileInput && fileLabelText) {
+    realFileInput.addEventListener('change', () => {
+      const f = realFileInput.files[0];
+      fileLabelText.textContent = f ? f.name : 'Choose file…';
+    });
+  }
 
   // Filters + search + sort
   function applyFilters() {
@@ -137,7 +176,10 @@ document.addEventListener('DOMContentLoaded', () => {
       return true;
     });
 
-    out.sort((a,b) => sort === 'new' ? b.ts - a.ts : a.ts - b.ts);
+    if (sort === 'new') out.sort((a,b) => b.ts - a.ts);
+    else if (sort === 'old') out.sort((a,b) => a.ts - b.ts);
+    else if (sort === 'name') out.sort((a,b) => a.name.localeCompare(b.name, undefined, {sensitivity: 'base'}));
+
     return out;
   }
 
